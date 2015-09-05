@@ -3,13 +3,11 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * GKislin
@@ -35,6 +33,46 @@ public class UserMealsUtil
 	private static List<UserMealWithExceed> getFilteredMealsWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
 	{
 		return null;
+	}
+
+	private static List<UserMealWithExceed> getFilteredMealsWithExceeded02(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
+	{
+		List<UserMealWithExceed> mealsWithExceed = new ArrayList<>();
+
+		Map<LocalDate, List<UserMeal>> mealsByDate = new HashMap<>();
+		for (UserMeal userMeal : mealList) {
+			LocalDate localDate = userMeal.getDateTime().toLocalDate();
+			if (mealsByDate.containsKey(localDate)) {
+				mealsByDate.get(localDate).add(userMeal);
+			} else {
+				List<UserMeal> l = new ArrayList<>();
+				l.add(userMeal);
+				mealsByDate.put(localDate, l);
+			}
+		}
+
+		for (Map.Entry<LocalDate, List<UserMeal>> entry : mealsByDate.entrySet()) {
+			List<UserMeal> meals = entry.getValue();
+			int sumCalories = 0;
+			for (UserMeal meal : meals) {
+				sumCalories += meal.getCalories();
+			}
+			if (sumCalories > caloriesPerDay) {
+				for (UserMeal meal : meals) {
+					if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+						mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), true));
+					}
+				}
+			} else {
+				for (UserMeal meal : meals) {
+					if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+						mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), false));
+					}
+				}
+			}
+		}
+
+		return mealsWithExceed;
 	}
 
 
