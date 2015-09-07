@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * GKislin
@@ -30,11 +31,56 @@ public class UserMealsUtil
 //        .toLocalTime();
 	}
 
+	/**
+	 * Реализовать UserMealsUtil.getFilteredMealsWithExceeded:
+		 -  должны возвращаться только записи между startTime и endTime
+		 -  поле UserMealWithExceed.exceed должно показывать,
+		 превышает ли сумма калорий за весь день параметра метода caloriesPerDay
+
+		 Т.е UserMealWithExceed - это запись одной еды, но поле exceeded
+		 будет одинаково для всех записей за этот день.
+
+		 - Проверте результат выполнения ДЗ!
+		 - Оцените Time complexity вашего алгоритма.
+	 *
+	 *
+	 *
+	 */
 	private static List<UserMealWithExceed> getFilteredMealsWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
 	{
-		return null;
+		List<UserMealWithExceed> mealsWithExceed = new ArrayList<>();
+		Map<LocalDate, List<UserMeal>> mealsByDate = mealList
+				.stream()
+				.collect(Collectors.groupingBy(userMeal -> userMeal.getDateTime().toLocalDate()));
+
+		mealsByDate
+				.forEach((date, meals) -> {
+					int sum = meals.stream().mapToInt(UserMeal::getCalories).sum();
+					if (sum > caloriesPerDay) {
+						meals
+							.stream()
+							.filter(meal -> TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime))
+							.forEach(meal -> addToMealsWithExceed(mealsWithExceed, meal, true));
+					} else {
+						meals
+							.stream()
+							.filter(meal -> TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime))
+							.forEach(meal -> addToMealsWithExceed(mealsWithExceed, meal, false));
+					}
+				});
+		return mealsWithExceed;
 	}
 
+	private static void addToMealsWithExceed(List<UserMealWithExceed> mealsWithExceed, UserMeal meal, boolean isExceed)
+	{
+		if (isExceed) {
+			mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), true));
+		} else {
+			mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), false));
+		}
+	}
+
+	// Time complexity - n
 	private static List<UserMealWithExceed> getFilteredMealsWithExceeded02(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
 	{
 		List<UserMealWithExceed> mealsWithExceed = new ArrayList<>();
@@ -60,13 +106,13 @@ public class UserMealsUtil
 			if (sumCalories > caloriesPerDay) {
 				for (UserMeal meal : meals) {
 					if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-						mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), true));
+						addToMealsWithExceed(mealsWithExceed, meal, true);
 					}
 				}
 			} else {
 				for (UserMeal meal : meals) {
 					if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-						mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), false));
+						addToMealsWithExceed(mealsWithExceed, meal, false);
 					}
 				}
 			}
@@ -75,7 +121,7 @@ public class UserMealsUtil
 		return mealsWithExceed;
 	}
 
-
+	// Time complexity - n
 	public static List<UserMealWithExceed> getFilteredMealsWithExceeded01(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
 	{
 		List<UserMealWithExceed> withExceeds = new ArrayList<>();
