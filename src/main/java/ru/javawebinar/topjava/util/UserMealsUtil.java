@@ -50,8 +50,13 @@ public class UserMealsUtil
 	{
 		List<UserMealWithExceed> mealsWithExceed = new ArrayList<>();
 		Map<LocalDate, List<UserMeal>> mealsByDate = mealList
-				.stream()
-				.collect(Collectors.groupingBy(userMeal -> userMeal.getDateTime().toLocalDate()));
+				.parallelStream()
+				.unordered()
+				.collect(Collectors.groupingByConcurrent(userMeal -> userMeal.getDateTime().toLocalDate()));
+
+		// Note that if it is important that the elements for a given key appear in the order they appear in the source,
+		// then we cannot use a concurrent reduction, as ordering is one of the casualties of concurrent insertion.
+		// We would then be constrained to implement either a sequential reduction or a merge-based parallel reduction.
 
 		mealsByDate
 				.forEach((date, meals) -> {
