@@ -71,40 +71,20 @@ public class UserMealsUtil
 	}
 
 	// Time complexity - n
-	private static List<UserMealWithExceed> getFilteredMealsWithExceeded02(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
+	private static List<UserMealWithExceed> getFilteredMealsWithExceededByCycle(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
 	{
-		List<UserMealWithExceed> mealsWithExceed = new ArrayList<>();
 
-		Map<LocalDate, List<UserMeal>> mealsByDate = new HashMap<>();
-		for (UserMeal userMeal : mealList) {
-			LocalDate localDate = userMeal.getDateTime().toLocalDate();
-			if (mealsByDate.containsKey(localDate)) {
-				mealsByDate.get(localDate).add(userMeal);
-			} else {
-				List<UserMeal> l = new ArrayList<>();
-				l.add(userMeal);
-				mealsByDate.put(localDate, l);
-			}
+
+		Map<LocalDate, Integer> sumCaloriesByDate = new HashMap<>();
+		for (UserMeal meal : mealList) {
+			LocalDate mealDate = meal.getDateTime().toLocalDate();
+			sumCaloriesByDate.put(mealDate, sumCaloriesByDate.getOrDefault(mealDate, 0) + meal.getCalories());
 		}
 
-		for (Map.Entry<LocalDate, List<UserMeal>> entry : mealsByDate.entrySet()) {
-			List<UserMeal> meals = entry.getValue();
-			int sumCalories = 0;
-			for (UserMeal meal : meals) {
-				sumCalories += meal.getCalories();
-			}
-			if (sumCalories > caloriesPerDay) {
-				for (UserMeal meal : meals) {
-					if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-						addToMealsWithExceed(mealsWithExceed, meal, true);
-					}
-				}
-			} else {
-				for (UserMeal meal : meals) {
-					if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
-						addToMealsWithExceed(mealsWithExceed, meal, false);
-					}
-				}
+		List<UserMealWithExceed> mealsWithExceed = new ArrayList<>();
+		for (UserMeal meal : mealList) {
+			if (TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+				addToMealsWithExceed(mealsWithExceed, meal, sumCaloriesByDate.get(meal.getDateTime().toLocalDate()) > caloriesPerDay);
 			}
 		}
 
@@ -118,64 +98,6 @@ public class UserMealsUtil
 		} else {
 			mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), false));
 		}
-	}
-
-	// Time complexity - n
-	public static List<UserMealWithExceed> getFilteredMealsWithExceeded01(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
-	{
-		List<UserMealWithExceed> withExceeds = new ArrayList<>();
-		int sumCalories = 0;
-		UserMeal prev = null;
-		List<Integer> indexesPerDay = new ArrayList<>();
-		int i = 0;
-		for (UserMeal userMeal : mealList) {
-
-			if (prev != null && !isPerOneDay(prev, userMeal)) {
-				for (Integer index : indexesPerDay) {
-					UserMeal prevMeal = mealList.get(index);
-					if (TimeUtil.isBetween(prevMeal.getDateTime().toLocalTime(), startTime, endTime)) {
-						withExceeds.add(new UserMealWithExceed(prevMeal.getDateTime(), prevMeal.getDescription(), prevMeal.getCalories(), false));
-					}
-				}
-				indexesPerDay = new ArrayList<>();
-				sumCalories = 0;
-			}
-
-			sumCalories += userMeal.getCalories();
-
-			if (sumCalories > caloriesPerDay) {
-
-				if (indexesPerDay.size() > 0) {
-					for (Iterator<Integer> it = indexesPerDay.iterator(); it.hasNext();) {
-						UserMeal prevMeal = mealList.get(it.next());
-						if (TimeUtil.isBetween(prevMeal.getDateTime().toLocalTime(), startTime, endTime)) {
-							withExceeds.add(new UserMealWithExceed(prevMeal.getDateTime(), prevMeal.getDescription(), prevMeal.getCalories(), true));
-						}
-						it.remove();
-					}
-				}
-
-				if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
-					withExceeds.add(new UserMealWithExceed(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), true));
-				}
-			} else {
-				indexesPerDay.add(i);
-			}
-
-
-			prev = userMeal;
-			++i;
-		}
-		return withExceeds;
-	}
-
-	private static boolean isPerOneDay(UserMeal prev, UserMeal userMeal)
-	{
-		LocalDateTime prevDateTime = prev.getDateTime();
-		LocalDateTime userMealDateTime = userMeal.getDateTime();
-		return prevDateTime.getYear() == userMealDateTime.getYear() &&
-				prevDateTime.getMonthValue() == userMealDateTime.getMonthValue() &&
-				prevDateTime.getDayOfMonth() == userMealDateTime.getDayOfMonth();
 	}
 
 }
