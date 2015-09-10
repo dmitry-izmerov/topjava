@@ -73,8 +73,6 @@ public class UserMealsUtil
 	// Time complexity - n
 	private static List<UserMealWithExceed> getFilteredMealsWithExceededByCycle(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
 	{
-
-
 		Map<LocalDate, Integer> sumCaloriesByDate = new HashMap<>();
 		for (UserMeal meal : mealList) {
 			LocalDate mealDate = meal.getDateTime().toLocalDate();
