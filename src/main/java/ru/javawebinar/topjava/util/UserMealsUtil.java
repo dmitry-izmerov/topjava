@@ -26,9 +26,8 @@ public class UserMealsUtil
 				new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
 				new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
 		);
-		System.out.println(getFilteredMealsWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));;
-//        .toLocalDate();
-//        .toLocalTime();
+		List<UserMealWithExceed> filteredMealsWithExceeded = getFilteredMealsWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+		filteredMealsWithExceeded.forEach(System.out::println);
 	}
 
 	/**
@@ -48,40 +47,26 @@ public class UserMealsUtil
 	 */
 	private static List<UserMealWithExceed> getFilteredMealsWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay)
 	{
-		List<UserMealWithExceed> mealsWithExceed = new ArrayList<>();
-		Map<LocalDate, List<UserMeal>> mealsByDate = mealList
-				.parallelStream()
-				.unordered()
-				.collect(Collectors.groupingByConcurrent(userMeal -> userMeal.getDateTime().toLocalDate()));
+		Map<LocalDate, Integer> sumCaloriesByDate = mealList
+				.stream()
+				.collect(Collectors.groupingBy(userMeal -> userMeal.getDateTime().toLocalDate(), Collectors.summingInt(UserMeal::getCalories)));
 
 		// Note that if it is important that the elements for a given key appear in the order they appear in the source,
 		// then we cannot use a concurrent reduction, as ordering is one of the casualties of concurrent insertion.
 		// We would then be constrained to implement either a sequential reduction or a merge-based parallel reduction.
 
-		mealsByDate
-				.forEach((date, meals) -> {
-					int sum = meals.stream().mapToInt(UserMeal::getCalories).sum();
-					if (sum > caloriesPerDay) {
-						meals
-							.stream()
-							.filter(meal -> TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime))
-							.forEach(meal -> addToMealsWithExceed(mealsWithExceed, meal, true));
-					} else {
-						meals
-							.stream()
-							.filter(meal -> TimeUtil.isBetween(meal.getDateTime().toLocalTime(), startTime, endTime))
-							.forEach(meal -> addToMealsWithExceed(mealsWithExceed, meal, false));
-					}
-				});
-		return mealsWithExceed;
+		return mealList.stream()
+				.filter(userMeal -> TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime))
+				.map(userMeal -> createMealWithExceed(userMeal, sumCaloriesByDate.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
+				.collect(Collectors.toList());
 	}
 
-	private static void addToMealsWithExceed(List<UserMealWithExceed> mealsWithExceed, UserMeal meal, boolean isExceed)
+	private static UserMealWithExceed createMealWithExceed(UserMeal meal, boolean isExceed)
 	{
 		if (isExceed) {
-			mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), true));
+			return new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), true);
 		} else {
-			mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), false));
+			return new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), false);
 		}
 	}
 
@@ -124,6 +109,15 @@ public class UserMealsUtil
 		}
 
 		return mealsWithExceed;
+	}
+
+	private static void addToMealsWithExceed(List<UserMealWithExceed> mealsWithExceed, UserMeal meal, boolean isExceed)
+	{
+		if (isExceed) {
+			mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), true));
+		} else {
+			mealsWithExceed.add(new UserMealWithExceed(meal.getDateTime(), meal.getDescription(), meal.getCalories(), false));
+		}
 	}
 
 	// Time complexity - n
