@@ -5,5 +5,6 @@
 </head>
 <body>
 <h2>User list</h2>
+<a href="/topjava">To main</a>
 </body>
 </html>
