@@ -4,8 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
+import ru.javawebinar.topjava.util.exception.ExceptionUtil;
 
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 /**
  * GKislin
@@ -21,11 +25,11 @@ public class UserMealServiceImpl implements UserMealService
 	@Override
 	public UserMeal get(int userId, int id)
 	{
-		return repository.get(userId, id);
+		return ExceptionUtil.check(repository.get(userId, id), id);
 	}
 
 	@Override
-	public Map<Integer, UserMeal> getAll(int userId)
+	public List<UserMeal> getAll(int userId)
 	{
 		return repository.getAll(userId);
 	}
@@ -40,5 +44,17 @@ public class UserMealServiceImpl implements UserMealService
 	public void delete(int userId, int id)
 	{
 		repository.delete(userId, id);
+	}
+
+	@Override
+	public void deleteAll(int userId)
+	{
+		repository.deleteAll(userId);
+	}
+
+	@Override
+	public List<UserMeal> getBetweenDateTimes(int userId, LocalDateTime start, LocalDateTime end)
+	{
+		return repository.getBetweenDateTimes(userId, start, end);
 	}
 }

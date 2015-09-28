@@ -11,4 +11,9 @@ public class LoggedUser
 	{
 		return 1;
 	}
+
+	public static int getCaloriesPerDay()
+	{
+		return 2000;
+	}
 }

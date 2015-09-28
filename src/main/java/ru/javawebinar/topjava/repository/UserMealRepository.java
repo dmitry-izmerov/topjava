@@ -1,8 +1,10 @@
 package ru.javawebinar.topjava.repository;
 
-import ru.javawebinar.topjava.LoggedUser;
 import ru.javawebinar.topjava.model.UserMeal;
-import java.util.Map;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * GKislin
@@ -16,7 +18,9 @@ public interface UserMealRepository
 
 	UserMeal get(int userId, int id);
 
-	Map<Integer, UserMeal> getAll(int userId);
+	List<UserMeal> getAll(int userId);
 
-	LoggedUser getUser(UserMeal userMeal);
+	void deleteAll(int userId);
+
+	List<UserMeal> getBetweenDateTimes(int userId, LocalDateTime start, LocalDateTime end);
 }

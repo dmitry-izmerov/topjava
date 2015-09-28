@@ -1,9 +1,11 @@
 package ru.javawebinar.topjava.service;
 
 import ru.javawebinar.topjava.model.UserMeal;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.Map;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 /**
  * GKislin
@@ -11,11 +13,21 @@ import java.util.Map;
  */
 public interface UserMealService
 {
-	UserMeal get(int userId, int id) throws NotFoundException;
+	UserMeal get(int userId, int id);
 
-	Map<Integer, UserMeal> getAll(int userId) throws NotFoundException;;
+	List<UserMeal> getAll(int userId);
 
-	UserMeal save(int userId, UserMeal userMeal) throws NotFoundException;;
+	UserMeal save(int userId, UserMeal userMeal);
 
-	void delete(int userId, int id) throws NotFoundException;;
+	void delete(int userId, int id);
+
+	void deleteAll(int userId);
+
+	default List<UserMeal> getBetweenDates(int userId, LocalDate startDate, LocalDate endDate)
+	{
+		return getBetweenDateTimes(userId, LocalDateTime.of(startDate, LocalTime.MIN), LocalDateTime.of(endDate, LocalTime.MAX));
+	}
+
+	List<UserMeal> getBetweenDateTimes(int userId, LocalDateTime start, LocalDateTime end);
+
 }

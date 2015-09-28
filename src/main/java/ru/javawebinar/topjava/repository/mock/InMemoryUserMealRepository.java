@@ -2,17 +2,21 @@ package ru.javawebinar.topjava.repository.mock;
 
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.LoggedUser;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.repository.UserMealRepository;
+import ru.javawebinar.topjava.util.TimeUtil;
+import ru.javawebinar.topjava.util.UserMealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * GKislin
@@ -21,9 +25,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Repository
 public class InMemoryUserMealRepository implements UserMealRepository
 {
-	private Map<Integer, Map<Integer, UserMeal>> repository = new ConcurrentHashMap<>();
+	private Map<Integer, List<UserMeal>> repository = new ConcurrentHashMap<>();
 	private AtomicInteger counter = new AtomicInteger(0);
-
 	{
 		save(LoggedUser.id(), new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
 		save(LoggedUser.id(), new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
@@ -39,23 +42,29 @@ public class InMemoryUserMealRepository implements UserMealRepository
 		if (userMeal.isNew()) {
 			userMeal.setId(counter.incrementAndGet());
 		}
-		Map<Integer, UserMeal> map = null;
 		if (repository.containsKey(userId)) {
-			map = repository.get(userId);
+			List<UserMeal> userMeals = repository.get(userId);
+			userMeals.add(userMeal);
 		} else {
-			map = repository.get(userId);
+			List<UserMeal> userMeals = new ArrayList<>();
+			userMeals.add(userMeal);
+			repository.put(userId, userMeals);
 		}
-		map.put(userMeal.getId(), userMeal);
-		repository.put(userId, map);
 		return userMeal;
 	}
 
 	@Override
 	public boolean delete(int userId, int id)
 	{
-		if (repository.containsKey(userId) && repository.get(userId).containsKey(id)) {
-			repository.get(userId).remove(id);
-			return true;
+		if (repository.containsKey(userId)) {
+			List<UserMeal> meals = repository.get(userId);
+			for (Iterator<UserMeal> it = meals.iterator(); it.hasNext();) {
+				UserMeal meal = it.next();
+				if (meal.getId() == id) {
+					it.remove();
+					return true;
+				}
+			}
 		}
 		return false;
 	}
@@ -63,25 +72,37 @@ public class InMemoryUserMealRepository implements UserMealRepository
 	@Override
 	public UserMeal get(int userId, int id)
 	{
-		if (repository.containsKey(userId) && repository.get(userId).containsKey(id)) {
-			return repository.get(userId).get(id);
+		if (repository.containsKey(userId) ) {
+			for (UserMeal meal : repository.get(userId)) {
+				if (meal.getId() == id) {
+					return meal;
+				}
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public Map<Integer, UserMeal> getAll(int userId)
+	public List<UserMeal> getAll(int userId)
 	{
 		if (repository.containsKey(userId)) {
 			return repository.get(userId);
 		}
-		return Collections.emptyMap();
+		return Collections.emptyList();
 	}
 
 	@Override
-	public LoggedUser getUser(UserMeal userMeal)
+	public void deleteAll(int userId)
 	{
-		return userMeal.getUser();
+		if (repository.containsKey(userId)) {
+			repository.remove(userId);
+		}
+	}
+
+	@Override
+	public List<UserMeal> getBetweenDateTimes(int userId, LocalDateTime start, LocalDateTime end)
+	{
+		return getAll(userId).stream().filter(meal -> TimeUtil.isBetween(meal.getDateTime(), start, end)).collect(Collectors.toList());
 	}
 }
 
