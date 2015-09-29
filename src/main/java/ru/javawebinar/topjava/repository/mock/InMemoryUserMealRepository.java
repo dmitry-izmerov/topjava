@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class InMemoryUserMealRepository implements UserMealRepository
 {
 	private Map<Integer, List<UserMeal>> repository = new ConcurrentHashMap<>();
+
 	private AtomicInteger counter = new AtomicInteger(0);
 	{
 		save(LoggedUser.id(), new UserMeal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
@@ -39,17 +40,27 @@ public class InMemoryUserMealRepository implements UserMealRepository
 	@Override
 	public UserMeal save(int userId, UserMeal userMeal)
 	{
+		if (!repository.containsKey(userId)) {
+			repository.put(userId, new ArrayList<>());
+		}
+
+		List<UserMeal> meals = repository.get(userId);
+
 		if (userMeal.isNew()) {
 			userMeal.setId(counter.incrementAndGet());
-		}
-		if (repository.containsKey(userId)) {
-			List<UserMeal> userMeals = repository.get(userId);
-			userMeals.add(userMeal);
+			meals.add(userMeal);
 		} else {
-			List<UserMeal> userMeals = new ArrayList<>();
-			userMeals.add(userMeal);
-			repository.put(userId, userMeals);
+			int i = 0;
+			for (Iterator<UserMeal> it = meals.iterator(); it.hasNext(); ++i) {
+				UserMeal meal = it.next();
+				if (meal.getId().equals(userMeal.getId())) {
+					it.remove();
+					break;
+				}
+			}
+			meals.add(i, userMeal);
 		}
+
 		return userMeal;
 	}
 

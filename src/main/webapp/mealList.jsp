@@ -5,15 +5,7 @@
 <html>
 <head>
     <title>Meal list</title>
-    <style>
-        .normal {
-            color: green;
-        }
-
-        .exceeded {
-            color: red;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 <section>
@@ -22,6 +14,26 @@
     <h3>Meal list</h3>
     <a href="meals?action=create">Add Meal</a>
     <hr>
+    <form action="meals?action=filter" method="post">
+        <dl>
+            <dt>From date:</dt>
+            <dd><input type="date" name="startDate"/></dd>
+        </dl>
+        <dl>
+            <dt>To date:</dt>
+            <dd><input type="date" name="endDate"/></dd>
+        </dl>
+        <dl>
+            <dt>From time:</dt>
+            <dd><input type="time" name="startTime"/></dd>
+        </dl>
+        <dl>
+            <dt>To time:</dt>
+            <dd><input type="time" name="endTime"/></dd>
+        </dl>
+        <button type="submit">Filter</button>
+    </form>
+    <hr/>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
