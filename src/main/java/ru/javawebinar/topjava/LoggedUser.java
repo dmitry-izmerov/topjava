@@ -16,4 +16,9 @@ public class LoggedUser {
     public static void setId(int id) {
 		LoggedUser.id = id;
 	}
+
+	public static int getCaloriesPerDay()
+	{
+		return 2000;
+	}
 }
