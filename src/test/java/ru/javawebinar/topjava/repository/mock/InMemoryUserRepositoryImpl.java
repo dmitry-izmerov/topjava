@@ -17,47 +17,55 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 15.06.2015.
  */
 @Repository
-public class InMemoryUserRepositoryImpl implements UserRepository {
-    private static final LoggerWrapper LOG = LoggerWrapper.get(InMemoryUserRepositoryImpl.class);
+public class InMemoryUserRepositoryImpl implements UserRepository
+{
+	private static final LoggerWrapper LOG = LoggerWrapper.get(InMemoryUserRepositoryImpl.class);
 
-    private Map<Integer, User> repository = new ConcurrentHashMap<>();
-    private AtomicInteger counter = new AtomicInteger(0);
+	private Map<Integer, User> repository = new ConcurrentHashMap<>();
+	private AtomicInteger counter = new AtomicInteger(0);
 
-    @PostConstruct
-    public void postConstruct() {
-        LOG.info("+++ PostConstruct");
-    }
+	@PostConstruct
+	public void postConstruct()
+	{
+		LOG.info("+++ PostConstruct");
+	}
 
-    @PreDestroy
-    public void preDestroy() {
-        LOG.info("+++ PreDestroy");
-    }
+	@PreDestroy
+	public void preDestroy()
+	{
+		LOG.info("+++ PreDestroy");
+	}
 
-    @Override
-    public User save(User user) {
-        if (user.isNew()) {
-            user.setId(counter.incrementAndGet());
-        }
-        return repository.put(user.getId(), user);
-    }
+	@Override
+	public User save(User user)
+	{
+		if (user.isNew()) {
+			user.setId(counter.incrementAndGet());
+		}
+		return repository.put(user.getId(), user);
+	}
 
-    @Override
-    public boolean delete(int id) {
-        return repository.remove(id) != null;
-    }
+	@Override
+	public boolean delete(int id)
+	{
+		return repository.remove(id) != null;
+	}
 
-    @Override
-    public User get(int id) {
-        return repository.get(id);
-    }
+	@Override
+	public User get(int id)
+	{
+		return repository.get(id);
+	}
 
-    @Override
-    public Collection<User> getAll() {
-        return repository.values();
-    }
+	@Override
+	public Collection<User> getAll()
+	{
+		return repository.values();
+	}
 
-    @Override
-    public User getByEmail(String email) {
-        return getAll().stream().filter(u -> u.getEmail().equals(email)).findFirst().orElse(null);
-    }
+	@Override
+	public User getByEmail(String email)
+	{
+		return getAll().stream().filter(u -> u.getEmail().equals(email)).findFirst().orElse(null);
+	}
 }

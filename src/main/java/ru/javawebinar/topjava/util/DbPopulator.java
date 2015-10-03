@@ -12,17 +12,20 @@ import javax.sql.DataSource;
  * User: gkislin
  * Date: 26.08.2014
  */
-public class DbPopulator extends ResourceDatabasePopulator {
-    private static final ResourceLoader RESOURCE_LOADER = new DefaultResourceLoader();
+public class DbPopulator extends ResourceDatabasePopulator
+{
+	private static final ResourceLoader RESOURCE_LOADER = new DefaultResourceLoader();
 
-    @Autowired
-    private DataSource dataSource;
+	@Autowired
+	private DataSource dataSource;
 
-    public DbPopulator(String scriptLocation) {
-        super(RESOURCE_LOADER.getResource(scriptLocation));
-    }
+	public DbPopulator(String scriptLocation)
+	{
+		super(RESOURCE_LOADER.getResource(scriptLocation));
+	}
 
-    public void execute() {
-        DatabasePopulatorUtils.execute(this, dataSource);
-    }
+	public void execute()
+	{
+		DatabasePopulatorUtils.execute(this, dataSource);
+	}
 }

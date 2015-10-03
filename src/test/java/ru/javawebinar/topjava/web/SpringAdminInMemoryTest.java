@@ -22,32 +22,36 @@ import static ru.javawebinar.topjava.UserTestData.USER;
  * GKislin
  * 13.03.2015.
  */
-@ContextConfiguration("classpath:spring/spring-app.xml")
+@ContextConfiguration("classpath:spring-app-test.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class SpringAdminInMemoryTest {
+public class SpringAdminInMemoryTest
+{
 
-    @Autowired
-    private AdminRestController controller;
+	@Autowired
+	private AdminRestController controller;
 
-    @Autowired
-    private UserRepository repository;
+	@Autowired
+	private UserRepository repository;
 
-    @Before
-    public void setUp() throws Exception {
-        repository.save(USER);
-        repository.save(ADMIN);
-    }
+	@Before
+	public void setUp() throws Exception
+	{
+		repository.save(USER);
+		repository.save(ADMIN);
+	}
 
-    @Test
-    public void testDelete() throws Exception {
-        controller.delete(UserTestData.USER_ID);
-        Collection<User> users = controller.getAll();
-        Assert.assertEquals(users.size(), 1);
-        Assert.assertEquals(users.iterator().next(), ADMIN);
-    }
+	@Test
+	public void testDelete() throws Exception
+	{
+		controller.delete(UserTestData.USER_ID);
+		Collection<User> users = controller.getAll();
+		Assert.assertEquals(users.size(), 1);
+		Assert.assertEquals(users.iterator().next(), ADMIN);
+	}
 
-    @Test(expected = NotFoundException.class)
-    public void testDeleteNotFound() throws Exception {
-        controller.delete(10);
-    }
+	@Test(expected = NotFoundException.class)
+	public void testDeleteNotFound() throws Exception
+	{
+		controller.delete(10);
+	}
 }

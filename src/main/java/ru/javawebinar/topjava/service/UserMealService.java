@@ -11,20 +11,22 @@ import java.util.Collection;
  * GKislin
  * 15.06.2015.
  */
-public interface UserMealService {
-    UserMeal get(int id, int userId);
+public interface UserMealService
+{
+	UserMeal get(int id, int userId);
 
-    void delete(int id, int userId);
+	void delete(int id, int userId);
 
-    default Collection<UserMeal> getBetweenDates(LocalDate startDate, LocalDate endDate, int userId) {
-        return getBetweenDateTimes(LocalDateTime.of(startDate, LocalTime.MIN), LocalDateTime.of(endDate, LocalTime.MAX), userId);
-    }
+	default Collection<UserMeal> getBetweenDates(LocalDate startDate, LocalDate endDate, int userId)
+	{
+		return getBetweenDateTimes(LocalDateTime.of(startDate, LocalTime.MIN), LocalDateTime.of(endDate, LocalTime.MAX), userId);
+	}
 
-    Collection<UserMeal> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId);
+	Collection<UserMeal> getBetweenDateTimes(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId);
 
-    Collection<UserMeal> getAll(int userId);
+	Collection<UserMeal> getAll(int userId);
 
-    UserMeal update(UserMeal meal, int userId);
+	UserMeal update(UserMeal meal, int userId);
 
-    UserMeal save(UserMeal meal, int userId);
+	UserMeal save(UserMeal meal, int userId);
 }
