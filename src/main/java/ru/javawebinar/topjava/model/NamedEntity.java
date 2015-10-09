@@ -10,30 +10,36 @@ import javax.persistence.MappedSuperclass;
  * Date: 22.08.2014
  */
 @MappedSuperclass
-public class NamedEntity extends BaseEntity {
+public class NamedEntity extends BaseEntity
+{
 
-    @NotEmpty
-    @Column(name = "name", nullable = false)
-    protected String name;
+	@NotEmpty
+	@Column(name = "name", nullable = false)
+	protected String name;
 
-    public NamedEntity() {
-    }
+	public NamedEntity()
+	{
+	}
 
-    protected NamedEntity(Integer id, String name) {
-        super(id);
-        this.name = name;
-    }
+	protected NamedEntity(Integer id, String name)
+	{
+		super(id);
+		this.name = name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
-    public String getName() {
-        return this.name;
-    }
+	public String getName()
+	{
+		return this.name;
+	}
 
-    @Override
-    public String toString() {
-        return name;
-    }
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

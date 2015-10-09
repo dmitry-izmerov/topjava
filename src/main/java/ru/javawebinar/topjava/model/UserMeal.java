@@ -1,64 +1,85 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
  * GKislin
  * 11.01.2015.
  */
-public class UserMeal extends BaseEntity {
+@Entity
+@Table(name = "meals")
+@Access(value = AccessType.FIELD)
+public class UserMeal extends BaseEntity
+{
 
-    protected LocalDateTime dateTime;
+	@Column(name = "date_time", nullable = false)
+	@NotEmpty
+	protected LocalDateTime dateTime;
 
-    protected String description;
+	@Column(name = "description", nullable = false)
+	@NotEmpty
+	protected String description;
 
-    protected int calories;
+	@Column(name = "calories", nullable = false)
+	@NotEmpty
+	protected int calories;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User user;
 
-    public UserMeal() {
-    }
-    
-	public UserMeal(LocalDateTime dateTime, String description, int calories) {
+	public UserMeal()
+	{
+	}
+
+	public UserMeal(LocalDateTime dateTime, String description, int calories)
+	{
 		this(null, dateTime, description, calories);
 	}
 
-	public UserMeal(Integer id, LocalDateTime dateTime, String description, int calories) {
+	public UserMeal(Integer id, LocalDateTime dateTime, String description, int calories)
+	{
 		super(id);
 		this.dateTime = dateTime;
 		this.description = description;
 		this.calories = calories;
 	}
 
-	public void setId(int id) {
+	public void setId(int id)
+	{
 		this.id = id;
 	}
 
-	public LocalDateTime getDateTime() {
+	public LocalDateTime getDateTime()
+	{
 		return dateTime;
 	}
 
-	public String getDescription() {
+	public String getDescription()
+	{
 		return description;
 	}
 
-	public int getCalories() {
+	public int getCalories()
+	{
 		return calories;
 	}
 
-	public Integer getId() {
+	public Integer getId()
+	{
 		return id;
 	}
 
-	public boolean isNew() {
+	public boolean isNew()
+	{
 		return id == null;
 	}
 
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "UserMeal{" +
 				"id=" + id +
 				", dateTime=" + dateTime +
@@ -66,16 +87,19 @@ public class UserMeal extends BaseEntity {
 				", calories=" + calories +
 				'}';
 	}
-	
-	public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDateTime(LocalDateTime dateTime)
+	{
+		this.dateTime = dateTime;
+	}
 
-    public void setCalories(int calories) {
-        this.calories = calories;
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+
+	public void setCalories(int calories)
+	{
+		this.calories = calories;
 	}
 }

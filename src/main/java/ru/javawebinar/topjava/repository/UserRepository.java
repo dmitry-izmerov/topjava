@@ -8,17 +8,18 @@ import java.util.Collection;
  * User: gkislin
  * Date: 22.08.2014
  */
-public interface UserRepository {
-    User save(User user);
+public interface UserRepository
+{
+	User save(User user);
 
-    // false if not found
-    boolean delete(int id);
+	// false if not found
+	boolean delete(int id);
 
-    // null if not found
-    User get(int id);
+	// null if not found
+	User get(int id);
 
-    // null if not found
-    User getByEmail(String email);
+	// null if not found
+	User getByEmail(String email);
 
-    Collection<User> getAll();
+	Collection<User> getAll();
 }

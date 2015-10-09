@@ -13,30 +13,36 @@ import java.util.List;
  */
 
 @Repository
-public class JpaUserMealRepositoryImpl implements UserMealRepository {
+public class JpaUserMealRepositoryImpl implements UserMealRepository
+{
 
-    @Override
-    public UserMeal save(UserMeal userMeal, int userId) {
-        return null;
-    }
+	@Override
+	public UserMeal save(UserMeal userMeal, int userId)
+	{
+		return null;
+	}
 
-    @Override
-    public boolean delete(int id, int userId) {
-        return false;
-    }
+	@Override
+	public boolean delete(int id, int userId)
+	{
+		return false;
+	}
 
-    @Override
-    public UserMeal get(int id, int userId) {
-        return null;
-    }
+	@Override
+	public UserMeal get(int id, int userId)
+	{
+		return null;
+	}
 
-    @Override
-    public List<UserMeal> getAll(int userId) {
-        return null;
-    }
+	@Override
+	public List<UserMeal> getAll(int userId)
+	{
+		return null;
+	}
 
-    @Override
-    public List<UserMeal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return null;
-    }
+	@Override
+	public List<UserMeal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId)
+	{
+		return null;
+	}
 }

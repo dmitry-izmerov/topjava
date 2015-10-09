@@ -10,29 +10,36 @@ import java.util.Collection;
  * 06.03.2015.
  */
 @Controller
-public class AdminRestController extends AbstractUserController {
+public class AdminRestController extends AbstractUserController
+{
 
-    public Collection<User> getAll() {
-        return super.getAll();
-    }
+	public Collection<User> getAll()
+	{
+		return super.getAll();
+	}
 
-    public User get(int id) {
-        return super.get(id);
-    }
+	public User get(int id)
+	{
+		return super.get(id);
+	}
 
-    public User create(User user) {
-        return super.create(user);
-    }
+	public User create(User user)
+	{
+		return super.create(user);
+	}
 
-    public void delete(int id) {
-        super.delete(id);
-    }
+	public void delete(int id)
+	{
+		super.delete(id);
+	}
 
-    public void update(User user, int id) {
-        super.update(user, id);
-    }
+	public void update(User user, int id)
+	{
+		super.update(user, id);
+	}
 
-    public User getByMail(String email) {
-        return super.getByMail(email);
-    }
+	public User getByMail(String email)
+	{
+		return super.getByMail(email);
+	}
 }
