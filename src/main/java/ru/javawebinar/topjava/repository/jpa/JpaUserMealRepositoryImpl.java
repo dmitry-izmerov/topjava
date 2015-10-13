@@ -67,8 +67,8 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository
 	{
 		return em.createNamedQuery(UserMeal.GET_BETWEEN, UserMeal.class)
 				.setParameter("user_id", userId)
-				.setParameter("start", Timestamp.valueOf(startDate))
-				.setParameter("end", Timestamp.valueOf(endDate))
+				.setParameter("start", startDate)
+				.setParameter("end", endDate)
 				.getResultList();
 	}
 }
