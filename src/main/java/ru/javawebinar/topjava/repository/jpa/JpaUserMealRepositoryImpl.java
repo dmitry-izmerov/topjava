@@ -36,6 +36,7 @@ public class JpaUserMealRepositoryImpl implements UserMealRepository
 			em.persist(userMeal);
 			return userMeal;
 		} else {
+			if (get(userMeal.getId(), userId) == null) return null;
 			return em.merge(userMeal);
 		}
 	}
