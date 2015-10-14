@@ -21,5 +21,7 @@ public interface UserService {
     Collection<User> getAll();
     public User getByEmail(String email) throws NotFoundException;
 
-    public void update(User user);
+    void update(User user) throws NotFoundException;
+    
+    void evictCache();
 }
