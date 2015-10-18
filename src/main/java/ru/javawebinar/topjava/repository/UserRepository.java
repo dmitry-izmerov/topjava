@@ -21,4 +21,6 @@ public interface UserRepository {
     User getByEmail(String email);
 
     Collection<User> getAll();
+
+	User getWithMeals(int id);
 }

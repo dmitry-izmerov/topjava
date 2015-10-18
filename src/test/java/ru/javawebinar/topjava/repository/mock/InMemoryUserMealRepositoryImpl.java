@@ -82,4 +82,10 @@ public class InMemoryUserMealRepositoryImpl implements UserMealRepository {
                 .sorted(USER_MEAL_COMPARATOR)
                 .collect(Collectors.toList());
     }
+
+	@Override
+	public UserMeal getWithUser(int id, int userId)
+	{
+		return null;
+	}
 }

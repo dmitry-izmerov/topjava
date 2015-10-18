@@ -10,15 +10,20 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.UserTestData.*;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
+import static ru.javawebinar.topjava.MealTestData.USER_MEALS;
+import static ru.javawebinar.topjava.Profiles.DATA_JPA;
 import static ru.javawebinar.topjava.Profiles.POSTGRES;
 import static ru.javawebinar.topjava.UserTestData.*;
 
@@ -28,9 +33,9 @@ import static ru.javawebinar.topjava.UserTestData.*;
 })
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
-@ActiveProfiles(POSTGRES)
-public class UserServiceTest {
-
+@ActiveProfiles({POSTGRES, DATA_JPA})
+public class UserServiceTest
+{
     @Autowired
     protected UserService service;
 
@@ -95,4 +100,11 @@ public class UserServiceTest {
         service.update(updated.asUser());
         MATCHER.assertEquals(updated, service.get(USER_ID));
     }
+
+	@Test
+	public void testGetWithMeals()
+	{
+		Collection<UserMeal> meals = service.getWithMeals(USER_ID).getMeals();
+		MealTestData.MATCHER.assertCollectionEquals(USER_MEALS, meals.stream().sorted((o1, o2) -> o2.getDateTime().compareTo(o1.getDateTime())).collect(Collectors.toList()));
+	}
 }

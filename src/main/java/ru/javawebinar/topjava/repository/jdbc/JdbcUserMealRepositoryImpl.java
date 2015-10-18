@@ -88,4 +88,10 @@ public class JdbcUserMealRepositoryImpl implements UserMealRepository {
                 "SELECT * FROM meals WHERE user_id=?  AND date_time BETWEEN  ? AND ? ORDER BY date_time DESC",
                 ROW_MAPPER, userId, Timestamp.valueOf(startDate), Timestamp.valueOf(endDate));
     }
+
+	@Override
+	public UserMeal getWithUser(int id, int userId)
+	{
+		return null;
+	}
 }

@@ -27,4 +27,6 @@ public interface UserMealService {
     UserMeal update(UserMeal meal, int userId);
 
     UserMeal save(UserMeal meal, int userId);
+
+	UserMeal getWithUser(int id, int userId);
 }

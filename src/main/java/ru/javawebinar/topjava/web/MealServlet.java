@@ -2,6 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.env.AbstractEnvironment;
+import org.springframework.core.env.ConfigurableEnvironment;
 import ru.javawebinar.topjava.LoggerWrapper;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.util.TimeUtil;
@@ -18,6 +20,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
+import static ru.javawebinar.topjava.Profiles.DATA_JPA;
+import static ru.javawebinar.topjava.Profiles.JPA;
+import static ru.javawebinar.topjava.Profiles.POSTGRES;
+
 /**
  * User: gkislin
  * Date: 19.08.2014
@@ -31,8 +37,9 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+		System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME, POSTGRES + ", " + JPA);
         springContext = new ClassPathXmlApplicationContext("spring/spring-app.xml", "spring/spring-db.xml");
-        mealController = springContext.getBean(UserMealRestController.class);
+		mealController = springContext.getBean(UserMealRestController.class);
     }
 
     @Override

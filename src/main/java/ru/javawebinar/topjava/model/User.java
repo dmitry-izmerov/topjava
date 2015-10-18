@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -54,6 +55,9 @@ public class User extends NamedEntity {
     @Column(name = "calories_per_day", columnDefinition = "default 2000")
     @Digits(fraction = 0, integer = 4)
     protected int caloriesPerDay = DEFAULT_CALORIES_PER_DAY;
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+	protected List<UserMeal> meals;
 
     public User() {
     }
@@ -119,7 +123,17 @@ public class User extends NamedEntity {
         return password;
     }
 
-    @Override
+	public List<UserMeal> getMeals()
+	{
+		return meals;
+	}
+
+	public void setMeals(List<UserMeal> meals)
+	{
+		this.meals = meals;
+	}
+
+	@Override
     public String toString() {
         return "User (" +
                 "id=" + id +
