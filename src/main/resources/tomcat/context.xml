@@ -41,7 +41,7 @@
 	          maxIdleTime="1800"  maxIdleTimeExcessConnections="120" idleConnectionTestPeriod="30"
               acquireIncrement="1"     testConnectionOnCheckout="true"
               removeAbandoned="true"   logAbandoned="true"
-              username="user"
+              username="java"
               password="password"
               driverClassName="org.postgresql.Driver"
               url="jdbc:postgresql://localhost:5432/topjava"/>
