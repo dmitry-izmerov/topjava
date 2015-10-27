@@ -26,10 +26,15 @@ public class TimeUtil {
 
     public static LocalDate parseLocalDate(String str, LocalDate def) {
         return StringUtils.isEmpty(str) ? def : LocalDate.parse(str);
+//        return StringUtils.isEmpty(str) ? def : LocalTime.parse(str);
     }
 
-    public static LocalTime parseLocalTime(String str, LocalTime def) {
-		return StringUtils.isEmpty(str) ? def : LocalTime.parse(str);
+    public static LocalDateTime parseLocalDateTime(String str) {
+        return parseLocalDateTime(str, DATE_TME_FORMATTER);
+    }
+
+    public static LocalDateTime parseLocalDateTime(String str, DateTimeFormatter formatter) {
+        return StringUtils.isEmpty(str) ? LocalDateTime.now() : LocalDateTime.parse(str, formatter);
 	}
 	public static String toString(LocalDateTime ldt) {
 		return ldt == null ? "" : ldt.format(DATE_TME_FORMATTER);
