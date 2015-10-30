@@ -20,12 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-public class AdminRestControllerTest extends AbstractControllerTest {
+public class AdminRestControllerTest extends AbstractUserControllerTest
+{
 
     public static final String REST_URL = AdminRestController.REST_URL + '/';
-
-    @Autowired
-    private UserService service;
 
     @Test
     public void testGet() throws Exception {

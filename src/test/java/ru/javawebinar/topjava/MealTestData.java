@@ -3,6 +3,7 @@ package ru.javawebinar.topjava;
 import ru.javawebinar.topjava.TestUtil.ToStringModelMatcher;
 import ru.javawebinar.topjava.matcher.ModelMatcher;
 import ru.javawebinar.topjava.model.UserMeal;
+import ru.javawebinar.topjava.to.UserMealWithExceed;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -20,6 +21,9 @@ public class MealTestData {
 
     public static final ModelMatcher<UserMeal, String> MATCHER = new ToStringModelMatcher<>(UserMeal.class);
 
+	public static final ModelMatcher<UserMealWithExceed, String> MATCHER_WITH_EXCEED = new ToStringModelMatcher<>(UserMealWithExceed.class);
+
+
 	public static final int MEAL1_ID = START_SEQ + 2;
 	public static final int ADMIN_MEAL_ID = START_SEQ + 8;
 
@@ -33,6 +37,16 @@ public class MealTestData {
 	public static final UserMeal ADMIN_MEAL2 = new UserMeal(ADMIN_MEAL_ID + 1, LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500);
 
 	public static final List<UserMeal> USER_MEALS = Arrays.asList(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
+
+	public static final UserMealWithExceed MEAL_WITH_EXCEED_1 = new UserMealWithExceed(MEAL1_ID, LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500, false);
+	public static final UserMealWithExceed MEAL_WITH_EXCEED_2 = new UserMealWithExceed(MEAL1_ID + 1, LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000, false);
+	public static final UserMealWithExceed MEAL_WITH_EXCEED_3 = new UserMealWithExceed(MEAL1_ID + 2, LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500, false);
+	public static final UserMealWithExceed MEAL_WITH_EXCEED_4 = new UserMealWithExceed(MEAL1_ID + 3, LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 500, true);
+	public static final UserMealWithExceed MEAL_WITH_EXCEED_5 = new UserMealWithExceed(MEAL1_ID + 4, LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 1000, true);
+	public static final UserMealWithExceed MEAL_WITH_EXCEED_6 = new UserMealWithExceed(MEAL1_ID + 5, LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510, true);
+
+	public static final List<UserMealWithExceed> USER_MEALS_WITH_EXCEED = Arrays.asList(MEAL_WITH_EXCEED_6, MEAL_WITH_EXCEED_5, MEAL_WITH_EXCEED_4, MEAL_WITH_EXCEED_3, MEAL_WITH_EXCEED_2, MEAL_WITH_EXCEED_1);
+
 
 	public static UserMeal getCreated() {
 		return new UserMeal(null, of(2015, Month.JUNE, 1, 18, 0), "Созданный ужин", 300);

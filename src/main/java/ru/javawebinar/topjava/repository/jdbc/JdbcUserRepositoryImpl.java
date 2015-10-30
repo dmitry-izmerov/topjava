@@ -9,6 +9,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.TransactionCallback;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
+import org.springframework.transaction.support.TransactionTemplate;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
@@ -40,7 +45,10 @@ public class JdbcUserRepositoryImpl implements UserRepository {
 
     private SimpleJdbcInsert insertUser;
 
-    @Autowired
+	@Autowired
+	private TransactionTemplate txTemplate;
+
+	@Autowired
     public JdbcUserRepositoryImpl(DataSource dataSource) {
         this.insertUser = new SimpleJdbcInsert(dataSource)
                 .withTableName("USERS")
@@ -57,24 +65,32 @@ public class JdbcUserRepositoryImpl implements UserRepository {
                 .addValue("registered", user.getRegistered())
                 .addValue("enabled", user.isEnabled())
                 .addValue("caloriesPerDay", user.getCaloriesPerDay());
+		
+		txTemplate.execute(new TransactionCallbackWithoutResult()
+		{
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus)
+			{
+				if (user.isNew()) {
+					Number newKey = insertUser.executeAndReturnKey(map);
+					user.setId(newKey.intValue());
+					insertRoles(user);
+				} else {
+					deleteRoles(user);
+					insertRoles(user);
+					namedParameterJdbcTemplate.update(
+							"UPDATE users SET name=:name, email=:email, password=:password, " +
+									"registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", map);
+				}
+			}
+		});
 
-        if (user.isNew()) {
-            Number newKey = insertUser.executeAndReturnKey(map);
-            user.setId(newKey.intValue());
-            insertRoles(user);
-        } else {
-            deleteRoles(user);
-            insertRoles(user);
-            namedParameterJdbcTemplate.update(
-                    "UPDATE users SET name=:name, email=:email, password=:password, " +
-                            "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", map);
-        }
         return user;
     }
 
     @Override
     public boolean delete(int id) {
-        return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
+		return txTemplate.execute(transactionStatus -> jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0);
     }
 
     @Override
@@ -122,23 +138,37 @@ public class JdbcUserRepositoryImpl implements UserRepository {
         Set<Role> roles = u.getRoles();
         Iterator<Role> iterator = roles.iterator();
 
-        jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)",
-                new BatchPreparedStatementSetter() {
-                    @Override
-                    public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setInt(1, u.getId());
-                        ps.setString(2, iterator.next().name());
-                    }
+        txTemplate.execute(new TransactionCallbackWithoutResult()
+		{
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus)
+			{
+				jdbcTemplate.batchUpdate("INSERT INTO user_roles (user_id, role) VALUES (?, ?)",
+						new BatchPreparedStatementSetter() {
+							@Override
+							public void setValues(PreparedStatement ps, int i) throws SQLException {
+								ps.setInt(1, u.getId());
+								ps.setString(2, iterator.next().name());
+							}
 
-                    @Override
-                    public int getBatchSize() {
-                        return roles.size();
-                    }
-                });
+							@Override
+							public int getBatchSize() {
+								return roles.size();
+							}
+						});
+			}
+		});
     }
 
     private void deleteRoles(User u) {
-        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", u.getId());
+        txTemplate.execute(new TransactionCallbackWithoutResult()
+		{
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus transactionStatus)
+			{
+				jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", u.getId());
+			}
+		});
     }
 
     private User setRoles(User u) {

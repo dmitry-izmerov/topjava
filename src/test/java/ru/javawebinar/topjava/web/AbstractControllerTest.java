@@ -44,9 +44,6 @@ abstract public class AbstractControllerTest {
     protected MockMvc mockMvc;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private WebApplicationContext webApplicationContext;
 
     @PostConstruct
@@ -55,10 +52,5 @@ abstract public class AbstractControllerTest {
                 .webAppContextSetup(webApplicationContext)
                 .addFilter(CHARACTER_ENCODING_FILTER)
                 .build();
-    }
-
-    @Before
-    public void setUp() {
-        userService.evictCache();
     }
 }

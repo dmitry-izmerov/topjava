@@ -19,12 +19,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-public class ProfileRestControllerTest extends AbstractControllerTest {
-
+public class ProfileRestControllerTest extends AbstractUserControllerTest
+{
     public static final String REST_URL = ProfileRestController.REST_URL + '/';
-
-    @Autowired
-    private UserService service;
 
     @Test
     public void testGet() throws Exception {
