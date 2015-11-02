@@ -26,8 +26,12 @@ public class TimeUtil {
 
     public static LocalDate parseLocalDate(String str, LocalDate def) {
         return StringUtils.isEmpty(str) ? def : LocalDate.parse(str);
-//        return StringUtils.isEmpty(str) ? def : LocalTime.parse(str);
     }
+
+	public static LocalTime parseLocalTime(String str, LocalTime def)
+	{
+		return StringUtils.isEmpty(str) ? def : LocalTime.parse(str);
+	}
 
     public static LocalDateTime parseLocalDateTime(String str) {
         return parseLocalDateTime(str, DATE_TME_FORMATTER);
