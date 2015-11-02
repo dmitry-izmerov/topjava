@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.UserMeal;
-import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.time.LocalDateTime;
@@ -26,10 +25,12 @@ import static ru.javawebinar.topjava.MealTestData.*;
 public class UserMealRestControllerTest extends AbstractMealControllerTest
 {
 
+	static final String REST_URL = UserMealRestController.REST_URL + "/";
+
 	@Test
 	public void testGetAll() throws Exception
 	{
-		mockMvc.perform(MockMvcRequestBuilders.get(UserMealRestController.REST_URL).contentType(MediaType.APPLICATION_JSON_VALUE))
+		mockMvc.perform(MockMvcRequestBuilders.get(REST_URL).contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -39,7 +40,7 @@ public class UserMealRestControllerTest extends AbstractMealControllerTest
 	@Test
 	public void testGetById() throws Exception
 	{
-		mockMvc.perform(MockMvcRequestBuilders.get(UserMealRestController.REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
+		mockMvc.perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -50,7 +51,7 @@ public class UserMealRestControllerTest extends AbstractMealControllerTest
 	public void testCreate() throws Exception
 	{
 		UserMeal expected = new UserMeal(LocalDateTime.of(2015, Month.NOVEMBER, 1, 16, 0), "milk protein 99%", 800);
-		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(UserMealRestController.REST_URL).contentType(MediaType.APPLICATION_JSON_VALUE)
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(JsonUtil.writeValue(expected)))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isCreated());
@@ -68,7 +69,7 @@ public class UserMealRestControllerTest extends AbstractMealControllerTest
 	@Test
 	public void testDelete() throws Exception
 	{
-		mockMvc.perform(MockMvcRequestBuilders.delete(UserMealRestController.REST_URL + MEAL1_ID))
+		mockMvc.perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -84,7 +85,7 @@ public class UserMealRestControllerTest extends AbstractMealControllerTest
 		expected.setDescription("milk protein 99%");
 		expected.setCalories(800);
 
-		mockMvc.perform(MockMvcRequestBuilders.post(UserMealRestController.REST_URL).contentType(MediaType.APPLICATION_JSON_VALUE)
+		mockMvc.perform(MockMvcRequestBuilders.post(REST_URL).contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(JsonUtil.writeValue(expected)))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isCreated());
@@ -92,7 +93,8 @@ public class UserMealRestControllerTest extends AbstractMealControllerTest
 		MATCHER.assertCollectionEquals(USER_MEALS, service.getAll(UserTestData.USER_ID));
 	}
 
-	/*public void testGetBetween() throws Exception
+	@Test
+	public void testGetBetween() throws Exception
 	{
 		ObjectMapper objectMapper = new ObjectMapper();
 		LocalDateTime start = LocalDateTime.of(2015, Month.MAY, 30, 10, 0);
@@ -105,10 +107,10 @@ public class UserMealRestControllerTest extends AbstractMealControllerTest
 
 		String content = JsonUtil.writeValue(objectMapper.writeValueAsString(params));
 //		System.out.println(content);
-		mockMvc.perform(MockMvcRequestBuilders.post(UserMealRestController.REST_URL + "filter").contentType(MediaType.APPLICATION_JSON_VALUE)
+		mockMvc.perform(MockMvcRequestBuilders.post(REST_URL + "filter").contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(content))
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MATCHER_WITH_EXCEED.contentListMatcher(Arrays.asList(MEAL_WITH_EXCEED_2, MEAL_WITH_EXCEED_1)));
-	}*/
+	}
 }

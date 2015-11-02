@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.web.meal;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,10 +18,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.time.ZoneId;
+import java.util.*;
+
+import static org.springframework.format.annotation.DateTimeFormat.*;
 
 /**
  * GKislin
@@ -30,7 +31,7 @@ import java.util.Scanner;
 @RequestMapping(UserMealRestController.REST_URL)
 public class UserMealRestController extends AbstractUserMealController
 {
-	static final String REST_URL = "/rest/meals/";
+	static final String REST_URL = "/rest/meals";
 
 	@RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<UserMealWithExceed> getAll()
@@ -71,16 +72,19 @@ public class UserMealRestController extends AbstractUserMealController
 		super.update(meal);
 	}
 
-	/*@RequestMapping(value = "/filter", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<UserMealWithExceed> getBetween(HttpServletRequest request) throws IOException
+	@RequestMapping(value = "/filter", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<UserMealWithExceed> getBetween(@RequestParam(value = "startDate") @DateTimeFormat(iso = ISO.DATE) Date startDate,
+											   @RequestParam(value = "endDate") @DateTimeFormat(iso = ISO.DATE) Date endDate,
+											   @RequestParam(value = "startTime") @DateTimeFormat(iso = ISO.TIME) Date startTime,
+											   @RequestParam(value = "endTime") @DateTimeFormat(iso = ISO.TIME) Date endTime) throws IOException
 	{
 		// problem here
 		// json get in next string with quotes in begin and end - ""{\"endDate\":\"2015-05-30\",\"startTime\":\"10:00:00\",\"endTime\":\"16:00:00\",\"startDate\":\"2015-05-30\"}""
-		String jsonData = new Scanner(request.getInputStream(),"UTF-8").next();
-		*//*if (jsonData.startsWith("\"") && jsonData.endsWith("\"")) {
+		// String jsonData = new Scanner(request.getInputStream(),"UTF-8").next();
+		/*if (jsonData.startsWith("\"") && jsonData.endsWith("\"")) {
 			jsonData = jsonData.subSequence(1, jsonData.length() - 2).toString();
-		}*//*
-		jsonData = "{\"endDate\":\"2015-05-30\",\"startTime\":\"10:00:00\",\"endTime\":\"16:00:00\",\"startDate\":\"2015-05-30\"}";
+		}*/
+		/*jsonData = "{\"endDate\":\"2015-05-30\",\"startTime\":\"10:00:00\",\"endTime\":\"16:00:00\",\"startDate\":\"2015-05-30\"}";
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> params;
 		params = mapper.readValue(jsonData, new TypeReference<Map<String, String>>(){});
@@ -88,7 +92,12 @@ public class UserMealRestController extends AbstractUserMealController
 		LocalDate startDate = TimeUtil.parseLocalDate((String) params.get("startDate"), TimeUtil.MIN_DATE);
 		LocalDate endDate = TimeUtil.parseLocalDate((String) params.get("endDate"), TimeUtil.MAX_DATE);
 		LocalTime startTime = TimeUtil.parseLocalTime((String) params.get("startTime"), LocalTime.MIN);
-		LocalTime endTime = TimeUtil.parseLocalTime((String) params.get("endTime"), LocalTime.MAX);
-		return super.getBetween(startDate, startTime, endDate, endTime);
-	}*/
+		LocalTime endTime = TimeUtil.parseLocalTime((String) params.get("endTime"), LocalTime.MAX);*/
+		return super.getBetween(
+				startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+				startTime.toInstant().atZone(ZoneId.systemDefault()).toLocalTime(),
+				endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+				endTime.toInstant().atZone(ZoneId.systemDefault()).toLocalTime()
+		);
+	}
 }

@@ -1,0 +1,80 @@
+<application xmlns="http://wadl.dev.java.net/2009/02">
+    <doc xml:lang="en" title="http://localhost:8080"/>
+    <resources base="http://localhost:8080">
+        <resource path="topjava/rest/meals/" id="meals">
+            <doc xml:lang="en" title="meals"/>
+            <method name="GET" id="get">
+                <doc xml:lang="en" title="get"/>
+                <request/>
+                <response status="404 500">
+                    <representation mediaType="text/html;charset=utf-8" element="html"/>
+                </response>
+                <response status="404">
+                    <representation mediaType="" element="data"/>
+                    <representation mediaType="" element="data"/>
+                    <representation mediaType="" element="data"/>
+                    <representation mediaType="" element="data"/>
+                    <representation mediaType="" element="data"/>
+                </response>
+                <response status="200">
+                    <representation mediaType="application/json;charset=UTF-8" element="Response"/>
+                </response>
+            </method>
+            <method name="POST" id="post">
+                <doc xml:lang="en" title="post"/>
+                <request>
+                    <representation mediaType="application/json"/>
+                </request>
+                <response status="400 405">
+                    <representation mediaType="text/html;charset=utf-8" element="html"/>
+                </response>
+                <response status="">
+                    <representation mediaType="application/json"/>
+                </response>
+                <response status="201">
+                    <representation mediaType="application/json;charset=UTF-8" element="ns:Response" xmlns:ns="http://localhost/topjava/rest/meals/100003"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="topjava/rest/meals/100004" id="meals/100004">
+            <doc xml:lang="en" title="meals/100004"/>
+            <method name="GET" id="get">
+                <doc xml:lang="en" title="get"/>
+                <request/>
+                <response status="200">
+                    <representation mediaType="application/json;charset=UTF-8" element="ns:Response" xmlns:ns="http://localhost/topjava/rest/meals/100003"/>
+                </response>
+            </method>
+            <method name="PUT" id="put">
+                <doc xml:lang="en" title="put"/>
+                <request>
+                    <representation mediaType="application/json"/>
+                </request>
+                <response status="500">
+                    <representation mediaType="text/html;charset=utf-8" element="html"/>
+                </response>
+                <response status="">
+                    <representation mediaType="application/json"/>
+                </response>
+                <response status="200">
+                    <representation mediaType="" element="data"/>
+                </response>
+            </method>
+        </resource>
+        <resource path="topjava/rest/meals/100003" id="meals/100003">
+            <doc xml:lang="en" title="meals/100003"/>
+            <method name="DELETE" id="delete">
+                <doc xml:lang="en" title="delete"/>
+                <request>
+                    <representation mediaType="application/json"/>
+                </request>
+                <response status="200">
+                    <representation mediaType="" element="data"/>
+                </response>
+                <response status="">
+                    <representation mediaType="application/json"/>
+                </response>
+            </method>
+        </resource>
+    </resources>
+</application>
