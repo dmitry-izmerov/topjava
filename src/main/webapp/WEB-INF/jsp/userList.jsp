@@ -32,17 +32,17 @@
                     </thead>
                     <c:forEach items="${userList}" var="user">
                         <jsp:useBean id="user" scope="page" type="ru.javawebinar.topjava.model.User"/>
-                        <tr>
+                        <tr data-id="${user.id}">
                             <td><c:out value="${user.name}"/></td>
                             <td><a href="mailto:${user.email}">${user.email}</a></td>
                             <td>${user.roles}</td>
                             <td>
                                 <input type="checkbox"
-                                       <c:if test="${user.enabled}">checked</c:if> id="${user.id}"/>
+                                       <c:if test="${user.enabled}">checked</c:if> data-id="${user.id}"/>
                             </td>
-                            <td><fmt:formatDate value="${user.registered}" pattern="dd-MMMM-yyyy"/></td>
-                            <td><a class="btn btn-xs btn-primary edit" id="${user.id}">Edit</a></td>
-                            <td><a class="btn btn-xs btn-danger delete" id="${user.id}">Delete</a></td>
+                            <td><fmt:formatDate value="${user.registered}" pattern="dd-MM-yyyy"/></td>
+                            <td><button class="btn btn-sm btn-primary edit">Edit</button></td>
+                            <td><button class="btn btn-sm btn-danger delete">Delete</button></td>
                         </tr>
                     </c:forEach>
                 </table>
@@ -61,7 +61,7 @@
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" method="post" id="detailsForm">
-                    <input type="text" hidden="hidden" id="id" name="id">
+                    <input type="hidden" id="id" name="id">
 
                     <div class="form-group">
                         <label for="name" class="control-label col-xs-3">Name</label>
@@ -88,6 +88,14 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="enabled" class="control-label col-xs-3">Enabled</label>
+
+                        <div class="col-xs-9">
+                            <input type="checkbox" id="enabled" name="enabled">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <div class="col-xs-offset-3 col-xs-9">
                             <button type="submit" class="btn btn-primary">Save</button>
                         </div>
@@ -103,45 +111,45 @@
 <script type="text/javascript" src="webjars/datetimepicker/2.3.4/jquery.datetimepicker.js"></script>
 <script type="text/javascript" src="webjars/datatables/1.10.9/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
-<script type="text/javascript" src="resources/js/datatablesUtil.js"></script>
+<script type="text/javascript" src="webjars/momentjs/2.10.6/min/moment.min.js"></script>
+<script type="text/javascript" src="resources/js/utils.js"></script>
+<script type="text/javascript" src="resources/js/BaseList.js"></script>
+<script type="text/javascript" src="resources/js/UserList.js"></script>
 <script type="text/javascript">
 
-    var ajaxUrl = 'ajax/admin/users/';
-    var oTable_datatable;
-    var oTable_datatable_params;
-
-    //            $(document).ready(function () {
     $(function () {
-        oTable_datatable = $('#datatable');
-        oTable_datatable_params = {
-            "bPaginate": false,
-            "bInfo": false,
-            "aoColumns": [
+        var ajaxUrl = 'ajax/admin/users/',
+            params;
+
+        params = {
+            "paging": false,
+            "info": false,
+            "columns": [
                 {
-                    "mData": "name"
+                    "data": "name"
                 },
                 {
-                    "mData": "email"
+                    "data": "email"
                 },
                 {
-                    "mData": "roles"
+                    "data": "roles"
                 },
                 {
-                    "mData": "enabled"
+                    "data": "enabled"
                 },
                 {
-                    "mData": "registered"
+                    "data": "registered"
                 },
                 {
-                    "sDefaultContent": "",
-                    "bSortable": false
+                    "defaultContent": "",
+                    "orderable": false
                 },
                 {
-                    "sDefaultContent": "",
-                    "bSortable": false
+                    "defaultContent": "",
+                    "orderable": false
                 }
             ],
-            "aaSorting": [
+            "order": [
                 [
                     0,
                     "asc"
@@ -149,8 +157,17 @@
             ]
         };
 
-        oTable_datatable.dataTable(oTable_datatable_params);
-        makeEditable();
+        new UserList({
+            dataTableParams : params,
+            ajaxUrl : ajaxUrl,
+            btnAddSelector : '#add',
+            inputIdSelector : '#id',
+            editDialogSelector : '#editRow',
+            editFormSelector : '#detailsForm',
+            tableSelector : '#datatable',
+            btnEditSelector : '.edit',
+            btnDeleteSelector : '.delete'
+        });
     });
 </script>
 </html>
