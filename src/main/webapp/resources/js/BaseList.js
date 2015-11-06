@@ -1,6 +1,8 @@
 /**
  * Created by demi
  * on 04.11.15.
+ *
+ * Base class for lists
  */
 function BaseList(options) {
     this.options = options;
@@ -60,6 +62,9 @@ function BaseList(options) {
             return false;
         });
 
+        /**
+         * Add ajax handler for all document
+         */
         $(document).ajaxError(function (event, jqXHR, options, jsExc) {
             self.failNoty(event, jqXHR, options, jsExc);
         });
@@ -78,6 +83,9 @@ function BaseList(options) {
         });
     };
 
+    /**
+     * Load new data from server and update table
+     */
     this.updateTable = function () {
         var self = this;
 
@@ -86,6 +94,9 @@ function BaseList(options) {
         });
     };
 
+    /**
+     *  Only update data in table with passed argument
+     */
     this.updateData = function(data) {
         var self = this;
         this.dataTable.clear();
