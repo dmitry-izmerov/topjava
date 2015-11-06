@@ -83,21 +83,15 @@ function BaseList(options) {
         });
     };
 
-    /**
-     * Load new data from server and update table
-     */
     this.updateTable = function () {
         var self = this;
 
         $.get(this.ajaxUrl, function (data) {
-            self.updateData(data);
+            self.updateTableByData(data);
         });
     };
 
-    /**
-     *  Only update data in table with passed argument
-     */
-    this.updateData = function(data) {
+    this.updateTableByData = function(data) {
         var self = this;
         this.dataTable.clear();
         $.each(data, function (key, item) {

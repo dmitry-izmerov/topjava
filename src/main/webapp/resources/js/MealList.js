@@ -38,7 +38,7 @@ function MealList(options) {
                 method : 'GET',
                 data : $(this).serialize(),
                 success: function (data) {
-                    self.updateData(data);
+                    self.updateTableByData(data);
                     self.successNoty('Filtered');
                 }
             });
