@@ -134,6 +134,7 @@
 <script type="text/javascript" src="webjars/datatables/1.10.9/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
 <script type="text/javascript" src="resources/js/datatablesUtil.js"></script>
+<script type="text/javascript" src="resources/js/mealDatatables.js"></script>
 <script type="text/javascript">
     var ajaxUrl = 'ajax/profile/meals/';
     var datatableApi;
