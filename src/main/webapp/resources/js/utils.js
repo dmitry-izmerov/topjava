@@ -30,3 +30,11 @@ function renderDeleteBtn(data, type, row) {
     }
     return data;
 }
+
+// for integration momentjs and datetimepicker
+Date.parseDate = function(input, format){
+    return moment(input, format).toDate();
+};
+Date.prototype.dateFormat = function(format){
+    return moment(this).format(format);
+};

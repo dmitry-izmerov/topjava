@@ -136,8 +136,8 @@ $(function () {
         ajaxUrl : ajaxUrl,
         btnAddSelector : '#add',
         inputIdSelector : '#id',
-        editDialogSelector : '#editRow',
-        editFormSelector : '#detailsForm',
+        editDialogSelector : '#editDialog',
+        editFormSelector : '#editForm',
         tableSelector : '#datatable',
         btnEditSelector : '.btn-edit',
         btnDeleteSelector : '.btn-delete'

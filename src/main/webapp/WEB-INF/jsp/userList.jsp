@@ -16,7 +16,7 @@
             <h3><fmt:message key="users.title"/></h3>
 
             <div class="view-box">
-                <a class="btn btn-sm btn-info" id="add"><fmt:message key="users.add"/></a>
+                <button class="btn btn-sm btn-info" id="add"><fmt:message key="users.add"/></button>
 
                 <table class="table table-striped display" id="datatable">
                     <thead>
@@ -37,7 +37,7 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 
-<div class="modal fade" id="editRow">
+<div class="modal fade" id="editDialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -45,7 +45,7 @@
                 <h2 class="modal-title"><fmt:message key="users.edit"/></h2>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" method="post" id="detailsForm">
+                <form class="form-horizontal" method="post" id="editForm">
                     <input type="text" hidden="hidden" id="id" name="id">
 
                     <div class="form-group">
@@ -88,6 +88,7 @@
 <script type="text/javascript" src="webjars/datetimepicker/2.3.4/jquery.datetimepicker.js"></script>
 <script type="text/javascript" src="webjars/datatables/1.10.9/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
+<script type="text/javascript" src="webjars/momentjs/2.10.6/min/moment.min.js"></script>
 <script type="text/javascript" src="resources/js/utils.js"></script>
 <script type="text/javascript" src="resources/js/BaseList.js"></script>
 <script type="text/javascript" src="resources/js/UserList.js"></script>

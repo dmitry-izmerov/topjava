@@ -22,26 +22,26 @@
                         <label class="control-label col-sm-2" for="startDate">From Date:</label>
 
                         <div class="col-sm-2">
-                            <input type="date" name="startDate" id="startDate">
+                            <input type="text" name="startDate" id="startDate">
                         </div>
 
                         <label class="control-label col-sm-2" for="endDate">To Date:</label>
 
                         <div class="col-sm-2">
-                            <input type="date" name="endDate" id="endDate">
+                            <input type="text" name="endDate" id="endDate">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="startTime">From Time:</label>
 
                         <div class="col-sm-2">
-                            <input type="time" name="startTime" id="startTime">
+                            <input type="text" name="startTime" id="startTime">
                         </div>
 
                         <label class="control-label col-sm-2" for="endTime">To Time:</label>
 
                         <div class="col-sm-2">
-                            <input type="time" name="endTime" id="endTime">
+                            <input type="text" name="endTime" id="endTime">
                         </div>
                     </div>
                     <div class="form-group">
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                 </form>
-                <a class="btn btn-sm btn-info" id="add"><fmt:message key="meals.add"/></a>
+                <button class="btn btn-sm btn-info" id="add"><fmt:message key="meals.add"/></button>
                 <table class="table table-striped display" id="mealsTable">
                     <thead>
                         <tr>
@@ -68,7 +68,7 @@
 </div>
 <jsp:include page="fragments/footer.jsp"/>
 
-<div class="modal fade" id="editRow">
+<div class="modal fade" id="editDialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -76,14 +76,14 @@
                 <h2 class="modal-title"><fmt:message key="meals.edit"/></h2>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" method="post" id="detailsForm">
+                <form class="form-horizontal" method="post" id="editForm">
                     <input type="hidden" id="id" name="id">
 
                     <div class="form-group">
-                        <label for="datetime" class="control-label col-xs-3">Date</label>
+                        <label for="dateTime" class="control-label col-xs-3">Date</label>
 
                         <div class="col-xs-9">
-                            <input type="datetime-local" class="form-control" id="datetime"
+                            <input type="text" class="form-control" id="dateTime"
                                    name="dateTime" placeholder="Date">
                         </div>
                     </div>
@@ -119,6 +119,7 @@
 <script type="text/javascript" src="webjars/datetimepicker/2.3.4/jquery.datetimepicker.js"></script>
 <script type="text/javascript" src="webjars/datatables/1.10.9/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
+<script type="text/javascript" src="webjars/momentjs/2.10.6/min/moment.min.js"></script>
 <script type="text/javascript" src="resources/js/utils.js"></script>
 <script type="text/javascript" src="resources/js/BaseList.js"></script>
 <script type="text/javascript" src="resources/js/MealList.js"></script>

@@ -51,8 +51,11 @@ function UserList(options) {
         });
     };
 
+    this.initAdditions = function() {
+        this.initHandlers();
+    };
+
     this.init();
-    this.initHandlers();
 }
 
 inherit(UserList, BaseList);

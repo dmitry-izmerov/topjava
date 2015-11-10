@@ -15,15 +15,7 @@ $(function () {
         "info": false,
         "columns": [
             {
-                "data": "dateTime",
-                "render": function (date, type, row) {
-                    if (type == 'display') {
-                        debugger;
-                        var dateObject = new Date(date);
-                        return '<span>' + dateObject.toISOString().substring(0, 10) + '</span>';
-                    }
-                    return date;
-                }
+                "data": "dateTime"
             },
             {
                 "data": "description"
@@ -53,7 +45,7 @@ $(function () {
     new MealList({
         dataTableParams : params,
         ajaxUrl : ajaxUrl,
-        btnAddSelector : '#btnAdd',
+        btnAddSelector : '#add',
         inputIdSelector : '#id',
         editDialogSelector : '#editDialog',
         editFormSelector : '#editForm',

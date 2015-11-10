@@ -145,9 +145,13 @@ function BaseList(options) {
     this.initFilter = function () {
     };
 
+    this.initAdditions = function() {
+    };
+
     this.init = function() {
         this.initDataTable();
         this.makeEditable();
         this.initFilter();
+        this.initAdditions();
     };
 }
