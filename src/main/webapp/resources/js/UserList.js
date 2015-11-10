@@ -21,25 +21,38 @@ function UserList(options) {
         $('#enabled').prop('checked', false);
     };
 
-    this.createdRow = function(row, data, dataIndex) {
-        var $tr = $(row);
-        $tr.data('id', (data.id ? data.id : $tr.data('id')));
-        $tr.find('td:eq(0)').text(data.name);
-
-        if (data.email.includes('<a')) {
-            data.email = $(data.email).text();
+    this.createdRow = function (row, data, dataIndex) {
+        if (!data.enabled) {
+            $(row).css("text-decoration", "line-through");
         }
-        $tr.find('td:eq(1)').html('<a href="mailto:' + data.email + '">' + data.email + '</a>');
-        $tr.find('td:eq(2)').text(data.roles);
-        $tr.find('td:eq(3)').html('<input type="checkbox" ' + (data.enabled ? 'checked' : '') + '/>');
+        $(row).data('id', data.id);
+    };
 
-        var date = new Date(data.registered);
-        $tr.find('td:eq(4)').text(moment(date).format('DD-MM-YYYY'));
-        $tr.find('td:eq(5)').html('<button class="btn btn-sm btn-primary edit">Edit</button>');
-        $tr.find('td:eq(6)').html('<button class="btn btn-sm btn-danger delete">Delete</button>');
+    function enable($chkbox, id) {
+        var self = this,
+            enabled = $chkbox.is(":checked");
+        $chkbox.closest('tr').css("text-decoration", enabled ? "none" : "line-through");
+        $.ajax({
+            url: self.ajaxUrl + id,
+            type: 'POST',
+            data: 'enabled=' + enabled,
+            success: function () {
+                self.successNoty(enabled ? 'Enabled' : 'Disabled');
+            }
+        });
+    }
+
+    this.initHandlers = function () {
+        var self = this;
+
+        $(this.tableSelector).on('click', 'input[type="checkbox"]', function () {
+            var $tr = $(this).closest('tr');
+            self.enable($(this), $tr.data('id'));
+        });
     };
 
     this.init();
+    this.initHandlers();
 }
 
 inherit(UserList, BaseList);

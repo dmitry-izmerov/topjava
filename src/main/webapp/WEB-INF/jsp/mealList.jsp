@@ -17,7 +17,7 @@
 
             <div class="view-box">
 
-                <form method="post" class="form-horizontal" role="form" id="filter">
+                <form method="post" class="form-horizontal" role="form" id="filterForm">
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="startDate">From Date:</label>
 
@@ -51,30 +51,16 @@
                     </div>
                 </form>
                 <a class="btn btn-sm btn-info" id="add"><fmt:message key="meals.add"/></a>
-                <table class="table table-striped display" id="datatable">
+                <table class="table table-striped display" id="mealsTable">
                     <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Calories</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <c:forEach items="${mealList}" var="meal">
-                        <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.to.UserMealWithExceed"/>
-                        <tr class="${meal.exceed ? 'exceeded' : 'normal'}" id="${meal.id}">
-                            <td>
-                                    <%--<fmt:parseDate value="${meal.dateTime}" pattern="y-M-dd'T'H:m" var="parsedDate"/>--%>
-                                    <%--<fmt:formatDate value="${parsedDate}" pattern="yyyy.MM.dd HH:mm" />--%>
-                                <%=TimeUtil.toString(meal.getDateTime())%>
-                            </td>
-                            <td>${meal.description}</td>
-                            <td>${meal.calories}</td>
-                            <td><a class="btn btn-xs btn-primary edit">Edit</a></td>
-                            <td><a class="btn btn-xs btn-danger delete">Delete</a></td>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Calories</th>
+                            <th></th>
+                            <th></th>
                         </tr>
-                    </c:forEach>
+                    </thead>
                 </table>
             </div>
         </div>
@@ -131,66 +117,10 @@
 <script type="text/javascript" src="webjars/jquery/2.1.4/jquery.min.js"></script>
 <script type="text/javascript" src="webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="webjars/datetimepicker/2.3.4/jquery.datetimepicker.js"></script>
-<script type="text/javascript" src="webjars/datatables/1.10.9/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="webjars/datatables/1.10.9/js/jquery.dataTables.js"></script>
 <script type="text/javascript" src="webjars/noty/2.2.4/jquery.noty.packaged.min.js"></script>
-<script type="text/javascript" src="resources/js/datatablesUtil.js"></script>
+<script type="text/javascript" src="resources/js/utils.js"></script>
+<script type="text/javascript" src="resources/js/BaseList.js"></script>
+<script type="text/javascript" src="resources/js/MealList.js"></script>
 <script type="text/javascript" src="resources/js/mealDatatables.js"></script>
-<script type="text/javascript">
-    var ajaxUrl = 'ajax/profile/meals/';
-    var datatableApi;
-
-    function updateTable() {
-        $.ajax({
-            type: "POST",
-            url: ajaxUrl + 'filter',
-            data: $('#filter').serialize(),
-            success: function (data) {
-                updateTableByData(data);
-            }
-        });
-        return false;
-    }
-
-    $(function () {
-        datatableApi = $('#datatable').DataTable({
-            "bPaginate": false,
-            "bInfo": false,
-            "aoColumns": [
-                {
-                    "mData": "dateTime"
-                },
-                {
-                    "mData": "description"
-                },
-                {
-                    "mData": "calories"
-                },
-                {
-                    "sDefaultContent": "Edit",
-                    "bSortable": false
-                },
-                {
-                    "sDefaultContent": "Delete",
-                    "bSortable": false
-                }
-            ],
-            "aaSorting": [
-                [
-                    0,
-                    "desc"
-                ]
-            ]
-        });
-
-        $('#filter').submit(function () {
-            updateTable();
-            return false;
-        });
-        makeEditable();
-        init();
-    });
-
-    function init() {
-    }
-</script>
 </html>

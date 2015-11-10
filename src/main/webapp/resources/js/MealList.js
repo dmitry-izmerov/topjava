@@ -20,13 +20,9 @@ function MealList(options) {
 
     this.createdRow = function(row, data, dataIndex) {
         var $tr = $(row);
-        $tr.data('id', (data.id ? data.id : $tr.data('id')));
-        $tr.data('date-time', +new Date(data.dateTime));
-        $tr.find('td:eq(0)').text(data.dateTime);
-        $tr.find('td:eq(1)').text(data.description);
-        $tr.find('td:eq(2)').text(data.calories);
-        $tr.find('td:eq(3)').html('<button class="btn btn-sm btn-primary btn-edit">Edit</button>');
-        $tr.find('td:eq(4)').html('<button class="btn btn-sm btn-danger btn-delete">Delete</button>');
+        $tr.data('id', data.id);
+        $tr.removeClass('normal').removeClass('exceeded');
+        $tr.addClass(data.exceed ? 'exceeded' : 'normal');
     };
 
     this.initFilter = function () {

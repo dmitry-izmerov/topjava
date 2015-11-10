@@ -16,3 +16,17 @@ function inherit(Child, Parent) {
     Child.prototype.constructor = Child;
     Child.superclass = Parent.prototype;
 }
+
+function renderEditBtn(data, type, row) {
+    if (type == 'display') {
+        return '<a class="btn btn-sm btn-primary btn-edit">Edit</a>';
+    }
+    return data;
+}
+
+function renderDeleteBtn(data, type, row) {
+    if (type == 'display') {
+        return '<a class="btn btn-sm btn-danger btn-delete">Delete</a>';
+    }
+    return data;
+}
