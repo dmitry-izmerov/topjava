@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  * Mock implementation
  */
 public class LoggedUser extends org.springframework.security.core.userdetails.User {
-    private final UserTo userTo;
+    private UserTo userTo;
 
     public LoggedUser(User user) {
         super(user.getEmail(),
@@ -51,6 +51,11 @@ public class LoggedUser extends org.springframework.security.core.userdetails.Us
     public static int id() {
         return get().userTo.getId();
     }
+
+    public void update(UserTo newTo) {
+		newTo.setId(userTo.getId());
+		userTo = newTo;
+	}
 
     @Override
     public String toString() {
