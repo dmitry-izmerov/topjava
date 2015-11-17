@@ -14,6 +14,7 @@ import ru.javawebinar.topjava.util.UserUtil;
 import ru.javawebinar.topjava.web.user.AbstractUserController;
 
 import javax.validation.Valid;
+import java.util.Locale;
 
 /**
  * User: gkislin
@@ -23,7 +24,7 @@ import javax.validation.Valid;
 public class RootController extends AbstractUserController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String root() {
+    public String root(Locale locale) {
         return "redirect:meals";
     }
 
