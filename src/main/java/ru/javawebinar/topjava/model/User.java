@@ -34,7 +34,6 @@ public class User extends NamedEntity {
     @Column(name = "email", nullable = false, unique = true)
     @Email
     @NotEmpty
-	@NaturalId
     protected String email;
 
     @Column(name = "password", nullable = false)

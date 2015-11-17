@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -81,7 +83,15 @@ public class RootController extends AbstractUserController {
             return "profile";
         } else {
             status.setComplete();
-            super.create(UserUtil.createFromTo(userTo));
+            try {
+				super.create(UserUtil.createFromTo(userTo));
+			} catch (DataIntegrityViolationException e) {
+				if (e.getCause() instanceof ConstraintViolationException) {
+					result.rejectValue("email", "error.user", "An account already exists for this email.");
+					model.addAttribute("register", true);
+					return "profile";
+				}
+			}
             return "redirect:login?message=app.registered";
         }
     }
