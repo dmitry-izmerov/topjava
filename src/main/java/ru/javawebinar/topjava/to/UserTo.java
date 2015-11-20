@@ -7,8 +7,11 @@ import ru.javawebinar.topjava.util.UserUtil;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
-public class UserTo {
+public class UserTo implements Serializable {
+    static final long serialVersionUID = 1L;
+
     protected int id;
 
     @NotEmpty
