@@ -6,22 +6,6 @@ function UserList(options) {
 
     BaseList.call(this, options);
 
-    this.setEditForm = function($tr) {
-        $('#name').val($tr.find('td:eq(0)').text());
-        $('#email').val($tr.find('td:eq(1)').text());
-        $('#password').val('');
-        var checkbox = $tr.find('td:eq(3) input');
-        $('#enabled').prop('checked', checkbox.prop('checked'));
-    };
-
-    this.clearEditForm = function() {
-        $('#name').val('');
-        $('#email').val('');
-        $('#password').val('');
-        $('#enabled').prop('checked', false);
-    };
-
-    // remove ?
     this.createdRow = function (row, data, dataIndex) {
         if (!data.enabled) {
             $(row).css("text-decoration", "line-through");

@@ -1,26 +1,18 @@
-var ajaxUrl = 'ajax/profile/meals/';
-var datatableApi;
-
-function updateTable() {
-    $.ajax({
-        type: "POST",
-        url: ajaxUrl + 'filter',
-        data: $('#filter').serialize(),
-        success: function (data) {
-            updateTableByData(data);
-        }
-    });
-    return false;
-}
-
+/**
+ * Created by demi
+ * on 22.11.15.
+ */
 $(function () {
-    datatableApi = $('#datatable').DataTable({
+    var ajaxUrl = 'ajax/profile/meals/',
+        params;
+
+    params = {
         "ajax": {
             "url": ajaxUrl,
             "dataSrc": ""
         },
         "paging": false,
-        "info": true,
+        "info": false,
         "columns": [
             {
                 "data": "dateTime",
@@ -46,7 +38,6 @@ $(function () {
                 "defaultContent": "",
                 "orderable": false,
                 "render": renderDeleteBtn
-
             }
         ],
         "order": [
@@ -54,53 +45,18 @@ $(function () {
                 0,
                 "desc"
             ]
-        ],
-        "createdRow": function (row, data, dataIndex) {
-            $(row).addClass(data.exceed ? 'exceeded' : 'normal');
-        },
-        "initComplete": function () {
-            $('#filter').submit(function () {
-                updateTable();
-                return false;
-            });
+        ]
+    };
 
-            var startDate = $('#startDate');
-            var endDate = $('#endDate');
-            startDate.datetimepicker({
-                timepicker: false,
-                format: 'Y-m-d',
-                lang: 'ru',
-                formatDate: 'Y-m-d',
-                onShow: function (ct) {
-                    this.setOptions({
-                        maxDate: endDate.val() ? endDate.val() : false
-                    })
-                }
-            });
-            endDate.datetimepicker({
-                timepicker: false,
-                format: 'Y-m-d',
-                lang: 'ru',
-                formatDate: 'Y-m-d',
-                onShow: function (ct) {
-                    this.setOptions({
-                        minDate: startDate.val() ? startDate.val() : false
-                    })
-                }
-            });
-
-            $('.time-picker').datetimepicker({
-                datepicker: false,
-                format: 'H:i',
-                lang: 'ru'
-            });
-
-            $('#dateTime').datetimepicker({
-                format: 'Y-m-d\\TH:i',
-                lang: 'ru'
-            });
-
-            makeEditable();
-        }
+    new MealList({
+        dataTableParams : params,
+        ajaxUrl : ajaxUrl,
+        btnAddSelector : '#add',
+        inputIdSelector : '#id',
+        editDialogSelector : '#editDialog',
+        editFormSelector : '#editForm',
+        tableSelector : '#datatable',
+        btnEditSelector : '.btn-edit',
+        btnDeleteSelector : '.btn-delete'
     });
 });

@@ -1,20 +1,18 @@
-var ajaxUrl = 'ajax/admin/users/';
-var datatableApi;
-
-function updateTable() {
-    $.get(ajaxUrl, function (data) {
-        updateTableByData(data);
-    });
-}
-
+/**
+ * Created by demi
+ * on 22.11.15.
+ */
 $(function () {
-    datatableApi = $('#datatable').DataTable({
+    var ajaxUrl = 'ajax/admin/users/',
+        params;
+
+    params = {
         "ajax": {
             "url": ajaxUrl,
             "dataSrc": ""
         },
         "paging": false,
-        "info": true,
+        "info": false,
         "columns": [
             {
                 "data": "name"
@@ -35,7 +33,7 @@ $(function () {
                 "data": "enabled",
                 "render": function (data, type, row) {
                     if (type == 'display') {
-                        return '<input type="checkbox" ' + (data ? 'checked' : '') + ' onclick="enable($(this),' + row.id + ');"/>';
+                        return '<input type="checkbox" ' + (data ? 'checked' : '') + ' />';
                     }
                     return data;
                 }
@@ -51,13 +49,13 @@ $(function () {
                 }
             },
             {
+                "defaultContent": "",
                 "orderable": false,
-                "sDefaultContent": "",
                 "render": renderEditBtn
             },
             {
-                "orderable": false,
                 "defaultContent": "",
+                "orderable": false,
                 "render": renderDeleteBtn
             }
         ],
@@ -66,12 +64,18 @@ $(function () {
                 0,
                 "asc"
             ]
-        ],
-        "createdRow": function (row, data, dataIndex) {
-            if (!data.enabled) {
-                $(row).css("text-decoration", "line-through");
-            }
-        },
-        "initComplete": makeEditable
+        ]
+    };
+
+    new UserList({
+        dataTableParams : params,
+        ajaxUrl : ajaxUrl,
+        btnAddSelector : '#add',
+        inputIdSelector : '#id',
+        editDialogSelector : '#editDialog',
+        editFormSelector : '#editForm',
+        tableSelector : '#datatable',
+        btnEditSelector : '.btn-edit',
+        btnDeleteSelector : '.btn-delete'
     });
 });

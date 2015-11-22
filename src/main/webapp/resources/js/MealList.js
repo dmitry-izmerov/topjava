@@ -6,76 +6,79 @@ function MealList(options) {
 
     BaseList.call(this, options);
 
-    this.setEditForm = function($tr) {
-        $('#dateTime').val($tr.data('date-time'));
-        $('#description').val($tr.find('td:eq(1)').text());
-        $('#calories').val($tr.find('td:eq(2)').text());
-    };
-
-    this.clearEditForm = function() {
-        $('#dateTime').val('');
-        $('#description').val('');
-        $('#calories').val('');
-    };
-
-    // remove ?
     this.createdRow = function(row, data, dataIndex) {
         var $tr = $(row);
         $tr.data('id', data.id);
-        $tr.data('date-time', moment(new Date(data.dateTime)).format('YYYY-MM-DD[T]HH:mm'));
         $tr.removeClass('normal').removeClass('exceeded');
         $tr.addClass(data.exceed ? 'exceeded' : 'normal');
+    };
+
+    this.updateTable = function () {
+        var self = this;
+
+        $.ajax({
+            type: "POST",
+            url: this.ajaxUrl + 'filter',
+            data: $('#filter').serialize(),
+            success: function (data) {
+                self.updateTableByData(data);
+            }
+        });
+        return false;
     };
 
     this.initFilter = function () {
         var self = this;
 
-        $('#filterForm').submit(function () {
-            $.ajax({
-                url : self.ajaxUrl + 'filter',
-                method : 'POST',
-                data : $(this).serialize(),
-                success: function (data) {
-                    self.updateTableByData(data);
-                    self.successNoty('Filtered');
-                }
-            });
+        $('#filter').submit(function () {
+            self.updateTable();
             return false;
         });
     };
 
     this.initTimePicker = function() {
-        // filter
-        $('#startDate').datetimepicker({
-            timepicker:false,
-            format:'YYYY-MM-DD',
-            formatDate:'YYYY-MM-DD'
-        });
-        $('#endDate').datetimepicker({
-            timepicker:false,
-            format:'YYYY-MM-DD',
-            formatDate:'YYYY-MM-DD'
-        });
-        $('#startTime').datetimepicker({
-            datepicker:false,
-            format:'HH:mm',
-            formatTime:'HH:mm'
-        });
-        $('#endTime').datetimepicker({
-            datepicker:false,
-            format:'HH:mm',
-            formatTime:'HH:mm'
+
+        var startDate = $('#startDate'),
+            endDate = $('#endDate');
+
+        startDate.datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d',
+            lang: 'ru',
+            formatDate: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    maxDate: endDate.val() ? endDate.val() : false
+                })
+            }
         });
 
-        // edit form
+        endDate.datetimepicker({
+            timepicker: false,
+            format: 'Y-m-d',
+            lang: 'ru',
+            formatDate: 'Y-m-d',
+            onShow: function (ct) {
+                this.setOptions({
+                    minDate: startDate.val() ? startDate.val() : false
+                })
+            }
+        });
+
+        $('.time-picker').datetimepicker({
+            datepicker: false,
+            format: 'H:i',
+            lang: 'ru'
+        });
+
         $('#dateTime').datetimepicker({
-            format:'YYYY-MM-DD[T]HH:mm',
-            formatTime:'HH:mm',
-            formatDate:'YYYY-MM-DD'
+            format: 'Y-m-d\\TH:i',
+            lang: 'ru'
         });
     };
 
     this.initAdditions = function() {
+        this.initFilter();
         this.initTimePicker();
     };
 

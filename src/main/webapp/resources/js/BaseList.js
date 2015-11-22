@@ -17,15 +17,28 @@ function BaseList(options) {
     this.btnDeleteSelector = options.btnDeleteSelector;
     this.dataTableParams = options.dataTableParams;
 
-    this.setEditForm = function($tr) {
-        throw new Error('You must override function setEditForm!');
+    this.setEditForm = function (id) {
+        var $form = $(this.editFormSelector),
+            self = this;
+
+        $.get(this.ajaxUrl + id, function (data) {
+            $.each(data, function (key, value) {
+                $form.find("input[name='" + key + "']").val(value);
+            });
+            $(self.editDialogSelector).modal();
+        });
     };
 
     this.clearEditForm = function() {
-        throw new Error('You must override function clearEditForm!');
+        $(this.editFormSelector).find(":input").val("");
+    };
+
+    this.createdRow = function() {
+        throw new Error('You must override function createdRow!');
     };
 
     this.initDataTable = function() {
+        this.dataTableParams.createdRow = this.createdRow;
         this.dataTable = $(this.tableSelector).DataTable(this.dataTableParams);
     };
 
@@ -34,8 +47,8 @@ function BaseList(options) {
         var self = this;
 
         $(this.btnAddSelector).click(function () {
-            $(self.inputIdSelector).val(0);
             self.clearEditForm();
+            $(self.inputIdSelector).val(0);
             $(self.editDialogSelector).modal();
         });
 
@@ -43,7 +56,7 @@ function BaseList(options) {
             var $tr = $(this).closest('tr');
 
             $(self.inputIdSelector).val($tr.data('id'));
-            self.setEditForm($tr);
+            self.setEditForm($tr.data('id'));
             $(self.editDialogSelector).modal();
         });
 
@@ -69,18 +82,6 @@ function BaseList(options) {
         var header = $("meta[name='_csrf_header']").attr("content");
         $(document).ajaxSend(function(e, xhr, options) {
             xhr.setRequestHeader(header, token);
-        });
-    };
-
-    this.refreshRow = function (id) {
-        var $form = $(this.editFormSelector),
-            self = this;
-
-        $.get(this.ajaxUrl + id, function (data) {
-            $.each(data, function (key, value) {
-                $form.find("input[name='" + key + "']").val(value);
-            });
-            $(self.editDialogSelector).modal();
         });
     };
 
@@ -145,29 +146,12 @@ function BaseList(options) {
     this.failNoty = function (event, jqXHR, options, jsExc) {
         var errorInfo = $.parseJSON(jqXHR.responseText);
 
-        closeNote();
+        this.closeNote();
         failedNote = noty({
             text: 'Failed: ' + jqXHR.statusText + "<br>" + errorInfo.cause + "<br>" + errorInfo.detail,
             type: 'error',
             layout: 'bottomRight'
         });
-    };
-
-    this.renderEditBtn = function (data, type, row) {
-        if (type == 'display') {
-            return '<a class="btn btn-sm btn-primary btn-edit">Edit</a>';
-        }
-        return data;
-    };
-
-    this.renderDeleteBtn = function (data, type, row) {
-        if (type == 'display') {
-            return '<a class="btn btn-sm btn-danger btn-delete">Delete</a>';
-        }
-        return data;
-    };
-
-    this.initFilter = function () {
     };
 
     this.initAdditions = function() {
@@ -176,7 +160,6 @@ function BaseList(options) {
     this.init = function() {
         this.initDataTable();
         this.makeEditable();
-        this.initFilter();
         this.initAdditions();
     };
 }
