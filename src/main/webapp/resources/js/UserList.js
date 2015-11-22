@@ -28,7 +28,7 @@ function UserList(options) {
         $(row).data('id', data.id);
     };
 
-    function enable($chkbox, id) {
+    this.enable = function ($chkbox, id) {
         var self = this,
             enabled = $chkbox.is(":checked");
         $chkbox.closest('tr').css("text-decoration", enabled ? "none" : "line-through");
@@ -40,7 +40,7 @@ function UserList(options) {
                 self.successNoty(enabled ? 'Enabled' : 'Disabled');
             }
         });
-    }
+    };
 
     this.initHandlers = function () {
         var self = this;
